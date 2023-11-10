@@ -1,0 +1,4 @@
+smile
+sad
+surprise
+serious

@@ -1,0 +1,7 @@
+/bin
+/__pycache__
+/include
+/lib
+/share
+pyvenv.cfg
+.DS_Store
