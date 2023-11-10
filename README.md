@@ -1,6 +1,8 @@
 # 基于Claude 模型的智能NPC
-此项目基于Amazon Bedrock 的Claude模型能力，实现了虚拟人物的模拟，并且通过claude的instruct能力，赋予NPC 联动表情的能力。
-本项目实例完成了一位数学老师，和Tayler Swift的模拟。
+此项目基于[Amazon Bedrock](https://aws.amazon.com/bedrock/) 的Claude模型能力，实现了虚拟人物的模拟，并且通过claude的instruct能力，赋予NPC 联动表情的能力。
+
+本项目完成了一位数学老师，和Tayler Swift的模拟。通过此实验，您可以体验到Claude模型的控制能力，基于此可以在SLG，UGC游戏场景中为游戏玩家提供更有趣的体验。
+
 
 
 ## 环境准备
