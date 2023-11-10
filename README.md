@@ -7,7 +7,9 @@
 
 ## 环境准备
 - 下载git项目到您的本机目录
-
+```
+git clone https://github.com/RichardLeeY/HiNPC.git
+```
 - 安装python3.9  推荐采用[pyenv](https://github.com/pyenv/pyenv#readme)做python版本管理，也可以直接升级本机python版本到3.9
 
 - 升级boto3到最新版本,awscli到合适的版本
