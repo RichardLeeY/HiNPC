@@ -51,3 +51,7 @@ python Chatbot-teacher.py
 ![](./images/teacher.png)
 
 
+## 选择2
+采用AWS Polly 实现语音输出，
+
+
