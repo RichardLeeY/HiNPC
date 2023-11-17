@@ -5,3 +5,8 @@
 /share
 pyvenv.cfg
 .DS_Store
+*lixiaoyao*
+/images/*lixiaoyao*
+*Test*
+*test*
+*.sql

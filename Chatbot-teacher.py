@@ -64,7 +64,7 @@ with gr.Blocks() as demo:
     chatbot = gr.Chatbot([],
         elem_id="chatbot",
         bubble_full_width=False,
-        avatar_images=(None, (os.path.join(os.path.abspath(''), "snp.jpg"))),
+        avatar_images=(None, (os.path.join(os.path.abspath(''), "./images/snp.jpg"))),
         height = 500
         )
     msg = gr.Textbox()

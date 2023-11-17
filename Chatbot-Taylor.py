@@ -1,4 +1,3 @@
-
 import gradio as gr
 import random
 import time
@@ -31,7 +30,7 @@ pm = PromptManager("taylor")
 ref_character = 'Taylor Swift'
 ref_character_info = 'Taylor Alison Swift (born December 13, 1989) is an American singer-songwriter. Recognized for her songwriting, musical versatility, artistic reinventions, and influence on the music industry, she is a prominent cultural figure of the 21st century.'
 player_name = 'Tom'
-mt = RoleConversation(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run)
+mt = RoleConversation(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
 
 
 def respond(message, chat_history,imageurl):
