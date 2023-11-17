@@ -1,4 +1,3 @@
-
 import gradio as gr
 import random
 import time
@@ -15,44 +14,26 @@ from promptManager import PromptManager
 from RoleConversation import RoleConversation
 import re
 import os
-import json
 bedrock_run = boto3.client(service_name='bedrock-runtime')
 memory = ConversationBufferMemory()
 modelId = "anthropic.claude-v2"
 chatbotReady = 0
-
-# init expression dict
 expessionDict = {'smile': './images/ts-smile.gif', 'sad': './images/ts-sad.gif', 'surprise': './images/ts-shocked.gif', 'serious':'./images/ts-serious.gif'}
-# generate expression vector db with langchain faiss db
+
 raw_documents = TextLoader('./taylor-expression-words.txt').load()
 text_splitter = CharacterTextSplitter(separator = "\n",chunk_size=1, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 bed = BedrockEmbeddings(model_id="amazon.titan-embed-text-v1",region_name='us-east-1')
 db = FAISS.from_documents(documents, bed)
-
-# prompt template init 
 pm = PromptManager("taylor")
+#print("prompt:",pm.getPrompt())
 ref_character = 'Taylor Swift'
 ref_character_info = 'Taylor Alison Swift (born December 13, 1989) is an American singer-songwriter. Recognized for her songwriting, musical versatility, artistic reinventions, and influence on the music industry, she is a prominent cultural figure of the 21st century.'
 player_name = 'Tom'
-polly_client = boto3.client('polly')
-mt = RoleConversation(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run)
+mt = RoleConversation(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
 
-# generate audio by aws polly with neutal engine. 
-# You can choose voiceId in https://docs.aws.amazon.com/polly/latest/dg/ntts-voices-main.html
-def generate_audio(message):
-    response = polly_client.synthesize_speech(TextType='ssml', 
-                                          Text=message,
-                                          OutputFormat='mp3',
-                                          VoiceId='Ruth',
-                                          Engine='neural'
-                                          )
 
-    if "AudioStream" in response:
-        with open("./speech.mp3", "wb") as f:
-            f.write(response["AudioStream"].read()) 
-
-def respond(message, chat_history,imageurl,soundsurl):
+def respond(message, chat_history,imageurl):
 
     resp = mt.chat(message)
     print("type:",type(resp))
@@ -69,18 +50,12 @@ def respond(message, chat_history,imageurl,soundsurl):
     emotion = emotion.replace("]","")
     print("emotion:",emotion)
     chat_history.append((message,resp))
-    json_resp = eval(resp)
-    ssml_reply = json_resp['ssml_reply'].replace("\\","")
-    print("ssml_reply:",ssml_reply)
-    generate_audio(ssml_reply)
-    
     
     docs = db.similarity_search(emotion)
     emotion = docs[0].page_content
     imageurl = expessionDict[emotion]
     print(imageurl)
-    soundsurl = "./speech.mp3"
-    return "", chat_history,imageurl,soundsurl
+    return "", chat_history,imageurl
  
 with gr.Blocks() as demo:
     imgBlock = gr.Image(value= "./images/ts-banner.jpg",height=300)
@@ -92,7 +67,6 @@ with gr.Blocks() as demo:
         )
     msg = gr.Textbox()
     clear = gr.ClearButton([msg, chatbot])
-    output_audio = gr.Audio(label="Input Audio", type="filepath", format="mp3",autoplay="True")
-    msg.submit(respond, [msg, chatbot,imgBlock,output_audio], [msg,chatbot,imgBlock,output_audio])
+    msg.submit(respond, [msg, chatbot,imgBlock], [msg,chatbot,imgBlock])
 
 demo.launch()

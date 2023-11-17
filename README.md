@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ```
 
-## 运行
+## Level 1 运行
 - 与Tayler swift聊天 随着聊天的进行，可以观察到Taylor的表情变化
 ```
 python Chatbot-Taylor.py
@@ -51,7 +51,39 @@ python Chatbot-teacher.py
 ![](./images/teacher.png)
 
 
-## 选择2
-采用AWS Polly 实现语音输出，
+## Level 2 Taylor聊天新增同步音频输出的能力。
+- 给当前EC2 instance role 或者AKSK对应User 赋予 Amazon Polly的调用权限
+```
+{
+   "Version": "2012-10-17",
+   "Statement": [{
+      "Sid": "AllowSynthesizeSpeech",
+      "Effect": "Allow",
+      "Action": [
+         "polly:SynthesizeSpeech",
+      ]
+      "Resource": "*"
+      }
+   ]
+}
+```
+采用AWS Polly 实现语音输出，需要安装ffmpeg类库
 
+For MAC
+```
+brew install ffmpeg
+```
+For ubuntu
+```
+sudo apt update
+sudo apt install ffmpeg
+```
+## Level 2 运行
+- 与Tayler swift聊天 Tyler 会有语音回复您，语音的语调，语速您能够观察到变化
 
+```
+python Chatbot-Taylor-AmazonPolly.py
+```
+启动成功后，访问地址http://127.0.0.1:7860/ 开始聊天。 下面一段时聊天的视频
+[](./images/Taylor-polly.mov)
+ 

@@ -1,7 +1,7 @@
 import json
 
 class RoleConversation:
-    def __init__(self, prompt_template, reference_character, additional_info, player_name,bedrock_client):
+    def __init__(self, prompt_template, reference_character, additional_info, player_name,bedrock_client,chat_example):
         self.reference_character = reference_character
         self.additional_info = additional_info
         self.player_name = player_name
@@ -9,7 +9,9 @@ class RoleConversation:
         self.round = 0
         self.template = prompt_template\
                         .replace('{{REFERENCE_CHARACTER}}', reference_character)\
-                        .replace('{{ADDITIONAL_INFO}}', additional_info)
+                        .replace('{{ADDITIONAL_INFO}}', additional_info)\
+                        .replace('{{PLAYER_NAME}}', player_name)\
+                        .replace('{{CHATEXAMPLE}}',chat_example)
         self.br_r_client = bedrock_client
 
     def _gen_user_input(self, user_input):
@@ -56,7 +58,9 @@ class RoleConversation:
         }
 
         # print(prompt)
-        resp = self.br_r_client.invoke_model(modelId='anthropic.claude-v2', body=json.dumps(body), contentType='application/json')
+        # anthropic.claude-v2
+        # anthropic.claude-instant-v1
+        resp = self.br_r_client.invoke_model(modelId='anthropic.claude-instant-v1', body=json.dumps(body), contentType='application/json')
 
         resp_body = resp['body'].read().decode('utf8')
         resp_body = json.loads(resp_body)['completion']
