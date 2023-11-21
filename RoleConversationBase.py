@@ -1,6 +1,8 @@
 import json
+from abc import ABC, abstractmethod
 
-class RoleConversation:
+class RoleConversationBase(ABC):
+    @abstractmethod
     def __init__(self, prompt_template, reference_character, additional_info, player_name,bedrock_client,chat_example):
         self.reference_character = reference_character
         self.additional_info = additional_info
@@ -13,7 +15,9 @@ class RoleConversation:
                         .replace('{{PLAYER_NAME}}', player_name)\
                         .replace('{{CHATEXAMPLE}}',chat_example)
         self.br_r_client = bedrock_client
-
+        pass
+    
+    @abstractmethod
     def _gen_user_input(self, user_input):
         _json = {
             "player_name": self.player_name,
@@ -23,21 +27,26 @@ class RoleConversation:
         }
 
         return json.dumps(_json)
-
+    @abstractmethod
     def _get_history(self):
-        return "\n".join(self.history)
-
+        pass
+    
+    @abstractmethod
     def _add_to_history(self, user_input_json, resp_body):
-        self.history.append("\n".join([
-            f"{self.player_name}: ",
-            json.dumps(user_input_json),
-            f"{self.reference_character}: ",
-            resp_body
-        ]))
-
+        pass
+    
+    @abstractmethod
     def print_round_with_slash(self):
         print("=" * 30 + 'Round: ' + str(self.round) + '=' * 30)
 
+    @abstractmethod
+    def generatPayLoad(self,prompt):
+        pass
+    
+    @abstractmethod
+    def parseResponseBody(self,resp):
+        pass
+    
     def chat(self, user_input):
         self.round += 1
         self.print_round_with_slash()
@@ -47,30 +56,19 @@ class RoleConversation:
 
         prompt = self.template.replace('{{USER_INPUT}}', _user_input)
         prompt = prompt.replace('{{HISTORY}}', _history)
-
-        body = {
-            "prompt": prompt,
-            "temperature": 0.5,
-            "top_p": 0.999,
-            "top_k": 250,
-            "max_tokens_to_sample": 300,
-            "stop_sequences": ["\n\nHuman:"]
-        }
-
+        body = self.generatPayLoad(prompt)
         # print(prompt)
         # anthropic.claude-v2
         # anthropic.claude-instant-v1
-        resp = self.br_r_client.invoke_model(modelId='anthropic.claude-instant-v1', body=json.dumps(body), contentType='application/json')
+        print("modelid:",self.modelId)
+        print("body:",body)
+        resp = self.br_r_client.invoke_model(modelId=self.modelId, body=json.dumps(body), contentType='application/json')
 
-        resp_body = resp['body'].read().decode('utf8')
-        resp_body = json.loads(resp_body)['completion']
-        
+        resp_body = self.parseResponseBody(resp)
         try:
             resp_body = json.dumps(json.loads(resp_body), ensure_ascii=False)
         except:
             pass
-
         print(f"{self.player_name}: {user_input}\n{self.reference_character}:{resp_body}")
-
-        self.current_prompt = prompt + resp_body
+        self._add_to_history(user_input, resp_body)
         return resp_body
