@@ -12,7 +12,7 @@ from langchain.llms.bedrock import Bedrock
 from langchain.chains import ConversationChain
 from langchain.prompts import PromptTemplate
 from promptManager import PromptManager
-from RoleConversation import RoleConversation
+from RoleConversationClaude import RoleConversationClaude
 import re
 import os
 import json
@@ -36,7 +36,7 @@ ref_character = 'Taylor Swift'
 ref_character_info = 'Taylor Alison Swift (born December 13, 1989) is an American singer-songwriter. Recognized for her songwriting, musical versatility, artistic reinventions, and influence on the music industry, she is a prominent cultural figure of the 21st century.'
 player_name = 'Tom'
 polly_client = boto3.client('polly')
-mt = RoleConversation(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
+mt = RoleConversationClaude(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
 
 # generate audio by aws polly with neutal engine. 
 # You can choose voiceId in https://docs.aws.amazon.com/polly/latest/dg/ntts-voices-main.html

@@ -2,6 +2,7 @@ import gradio as gr
 import random
 import time
 import boto3
+from langchain.memory import ConversationBufferMemory
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.bedrock import BedrockEmbeddings
@@ -10,10 +11,12 @@ from langchain.llms.bedrock import Bedrock
 from langchain.chains import ConversationChain
 from langchain.prompts import PromptTemplate
 from promptManager import PromptManager
-from RoleConversationClaude import RoleConversationClaude
+from RoleConversationLlama2 import RoleConversationLlama2
 import re
 import os
 bedrock_run = boto3.client(service_name='bedrock-runtime')
+memory = ConversationBufferMemory()
+
 chatbotReady = 0
 expessionDict = {'smile': './images/ts-smile.gif', 'sad': './images/ts-sad.gif', 'surprise': './images/ts-shocked.gif', 'serious':'./images/ts-serious.gif'}
 
@@ -22,12 +25,12 @@ text_splitter = CharacterTextSplitter(separator = "\n",chunk_size=1, chunk_overl
 documents = text_splitter.split_documents(raw_documents)
 bed = BedrockEmbeddings(model_id="amazon.titan-embed-text-v1",region_name='us-east-1')
 db = FAISS.from_documents(documents, bed)
-pm = PromptManager("taylor")
+pm = PromptManager("taylor-llama2")
 #print("prompt:",pm.getPrompt())
 ref_character = 'Taylor Swift'
 ref_character_info = 'Taylor Alison Swift (born December 13, 1989) is an American singer-songwriter. Recognized for her songwriting, musical versatility, artistic reinventions, and influence on the music industry, she is a prominent cultural figure of the 21st century.'
 player_name = 'Tom'
-mt = RoleConversationClaude(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
+mt = RoleConversationLlama2(pm.getPrompt(),ref_character, ref_character_info, player_name,bedrock_run,"")
 
 
 def respond(message, chat_history,imageurl):
