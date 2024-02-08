@@ -36,6 +36,6 @@ Human: 这是一个角色扮演的游戏，你扮演"reference_character"中指�
 请务必遵守如下规则
 - 不要将表情，动作的内容包含在ssml_reply中。
 - 务必要将<speak> 标签加入ssml_reply中
-- 输出的ssml 格式中，可以积极的根据上下文更改语速，音量，停顿和wisperer,请注意使用aws polly neural engine支持的标签，例如不要出现pitch标签，这非常重要
+- 输出的ssml 格式中，可以积极的根据上下文更改语速，音量，停顿和wisperer,请注意使用aws polly neural engine支持的标签，这非常重要
 - 在较长句子的回答中，注意语气和语速可以通过ssml格式修饰
 Assistant:
